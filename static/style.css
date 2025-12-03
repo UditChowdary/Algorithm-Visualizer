@@ -1,0 +1,281 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    /* Pastel mesh gradient using multiple radial gradients */
+    background:
+        radial-gradient(ellipse 60% 70% at 20% 30%, #b9f6ca 0%, #e3f2fd 60%, transparent 100%),
+        radial-gradient(ellipse 60% 70% at 80% 20%, #b3e5fc 0%, #fce4ec 60%, transparent 100%),
+        radial-gradient(ellipse 70% 80% at 60% 80%, #e1bee7 0%, #f3e5f5 70%, transparent 100%),
+        linear-gradient(120deg, #e3f2fd 0%, #fce4ec 100%);
+    background-blend-mode: lighten, lighten, lighten, normal;
+    min-height: 100vh;
+    animation: meshMove 18s ease-in-out infinite alternate;
+    background-size: 100% 100%;
+    position: relative;
+    overflow-x: hidden;
+}
+
+@keyframes meshMove {
+    0% {
+        background-position: 0% 50%, 100% 0%, 50% 100%, 0% 0%;
+    }
+    100% {
+        background-position: 100% 50%, 0% 100%, 50% 0%, 100% 100%;
+    }
+}
+
+/* Optional: animated particles overlay */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+        radial-gradient(circle at 10% 20%, rgba(33,150,243,0.08) 0, transparent 60%),
+        radial-gradient(circle at 80% 80%, rgba(255,64,129,0.10) 0, transparent 70%),
+        radial-gradient(circle at 60% 10%, rgba(255,235,59,0.10) 0, transparent 70%);
+    background-repeat: no-repeat;
+    background-size: cover;
+    animation: particlesMove 18s linear infinite alternate;
+}
+
+@keyframes particlesMove {
+    0% { background-position: 0% 0%, 100% 100%, 50% 0%; }
+    100% { background-position: 100% 100%, 0% 0%, 50% 100%; }
+}
+
+h1 {
+    text-align: center;
+    margin-top: 24px;
+    color: #1565c0;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px #90caf9;
+}
+
+#main-flex {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 24px;
+    margin: 20px auto 0 auto;
+    width: 100%;
+    max-width: 900px;
+}
+
+#visualization, #map-section {
+    margin: 0;
+    /* Glassmorphic / Neumorphic card for grid and map */
+    background: rgba(255,255,255,0.35);
+    box-shadow:
+        0 8px 32px 0 rgba(31, 38, 135, 0.10),
+        0 1.5px 4px 0 rgba(33,150,243,0.10),
+        0 1.5px 4px 0 rgba(255,64,129,0.08);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    border-radius: 24px;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    transition: box-shadow 0.3s, background 0.3s;
+}
+
+/* Neumorphic effect for grid and map cards (subtle shadow/highlight) */
+#visualization, #map-section {
+    box-shadow:
+        0 4px 24px 0 rgba(33,150,243,0.10),
+        0 1.5px 4px 0 rgba(255,64,129,0.08),
+        4px 4px 16px 0 rgba(200,200,255,0.10) inset,
+        -4px -4px 16px 0 rgba(255,255,255,0.25) inset;
+}
+
+#map-canvas {
+    width: 400px;
+    height: 400px;
+    border: 2px solid #1976d2;
+    background: #f6fafd;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(33,150,243,0.10);
+    transition: none;
+    margin: 0 auto;
+}
+
+#map-canvas:hover {
+    /* Remove glow and color change */
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    border-color: #1976d2;
+}
+
+#leaflet-map {
+    width: 400px !important;
+    height: 400px !important;
+    max-width: 100%;
+    min-width: 200px;
+    min-height: 200px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(255,64,129,0.12);
+    border: 2px solid #ff4081;
+    transition: box-shadow 0.4s, border-color 0.4s;
+    background: #fff;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    position: relative;
+    z-index: 1;
+    overflow: hidden; /* Add this line to ensure map tiles don't overflow */
+}
+
+#leaflet-map:hover {
+    /* Remove glow and color change */
+    box-shadow: 0 8px 32px rgba(255,64,129,0.12);
+    border-color: #ff4081;
+}
+
+#metrics {
+    margin: 10px 20px;
+    font-size: 1.1em;
+    background: rgba(255,255,255,0.8);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px #b3e5fc;
+    padding: 8px 16px;
+}
+
+#metrics span {
+    margin-right: 20px;
+}
+
+#controls button, #start-map-animation-btn {
+    margin-left: 8px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: none;
+    background: #1976d2;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: 0 2px 8px #90caf9;
+    font-weight: bold;
+    letter-spacing: 1px;
+    outline: none;
+    position: relative;
+    overflow: hidden;
+}
+
+#controls button:hover, #start-map-animation-btn:hover {
+    background: #1565c0;
+    box-shadow: 0 4px 16px #90caf9;
+    transform: none;
+}
+
+#controls button:active, #start-map-animation-btn:active {
+    background: #0d47a1;
+    box-shadow: 0 2px 8px #1976d2;
+}
+
+#controls span[title] {
+    margin-left: 10px;
+    cursor: help;
+    font-weight: bold;
+    color: #888;
+}
+
+#legend {
+    margin: 16px auto 0 auto;
+    justify-content: center;
+    width: fit-content;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px #b3e5fc;
+    padding: 8px 16px;
+    animation: legendPulse 2s infinite alternate;
+}
+
+@keyframes legendPulse {
+    0% { box-shadow: 0 2px 8px #b3e5fc; }
+    100% { box-shadow: 0 8px 24px #ff80ab; }
+}
+
+.legend-cell {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-right: 4px;
+    border-radius: 4px;
+    border: 1px solid #bbb;
+    vertical-align: middle;
+    box-shadow: 0 1px 4px #bdbdbd;
+    transition: transform 0.2s;
+}
+
+.legend-cell:hover {
+    transform: scale(1.2) rotate(-5deg);
+}
+
+.legend-cell.start { background: #4caf50; }
+.legend-cell.end { background: #f44336; }
+.legend-cell.path { background: #ffeb3b; }
+.legend-cell.visited { background: #b3e5fc; }
+.legend-cell.obstacle { background: #616161; }
+
+/* Smooth transition for visited and path cells */
+#map-canvas, canvas {
+    /* ...existing code... */
+    /* Ensure canvas is on top of background */
+    position: relative;
+    z-index: 2;
+}
+
+/* Animate visited and path cell overlays using CSS classes */
+.visited-anim {
+    animation: visitedFadeIn 0.5s cubic-bezier(0.4,0,0.2,1);
+    transition: background 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes visitedFadeIn {
+    from { background: #f6fafd; }
+    to   { background: #b3e5fc; }
+}
+
+.path-anim {
+    animation: pathFadeIn 0.6s cubic-bezier(0.4,0,0.2,1);
+    transition: background 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes pathFadeIn {
+    from { background: #b3e5fc; }
+    to   { background: #ffe082; }
+}
+
+/* Optional: add a glow effect when path is revealed */
+.path-glow {
+    box-shadow: 0 0 16px 4px #ffe08288, 0 0 4px 2px #fffde7;
+    animation: pathGlowPulse 1.2s ease-in-out;
+}
+@keyframes pathGlowPulse {
+    0% { box-shadow: 0 0 0px 0px #ffe08200; }
+    50% { box-shadow: 0 0 16px 6px #ffe08288, 0 0 4px 2px #fffde7; }
+    100% { box-shadow: 0 0 0px 0px #ffe08200; }
+}
+
+@media (max-width: 900px) {
+    #main-flex {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+    #visualization, #map-section {
+        width: 98vw;
+        max-width: 98vw;
+    }
+    #map-canvas, #leaflet-map {
+        width: 95vw !important;
+        height: 60vw !important;
+        min-width: 220px;
+        min-height: 220px;
+        max-width: 98vw;
+        max-height: 70vw;
+    }
+}

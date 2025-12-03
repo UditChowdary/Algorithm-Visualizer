@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Algorithm Visualizer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+    <h1>Interactive Algorithm Visualizer</h1>
+    <div id="controls">
+        <label for="algo-select">Choose Algorithm:</label>
+        <select id="algo-select">
+            <option value="dijkstra">Dijkstra's Shortest Path</option>
+            <option value="astar">A* Search</option>
+            <option value="bfs">Breadth-First Search</option>
+            <option value="dfs">Depth-First Search</option>
+            <option value="greedy">Greedy Best-First Search</option>
+            <!-- Add more algorithms as needed -->
+        </select>
+        <button id="run-btn">Run</button>
+        <button id="step-btn">Step</button>
+        <button id="reset-btn">Reset</button>
+    </div>
+    <div id="metrics">
+        <span id="route-length"></span>
+        <span id="computation-time"></span>
+        <span id="visited-count"></span>
+    </div>
+    <div id="main-flex" style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 32px; margin: 20px auto 0 auto; max-width: 1100px;">
+        <div style="flex:1"></div>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <div id="algo-explanation" style="margin-bottom:10px; position:relative; align-self:center;">
+                <span id="explanation-icon" style="cursor:pointer; font-size:18px; color:#1976d2; border-radius:50%; border:1px solid #1976d2; padding:2px 8px; background:#fff;">?</span>
+                <div id="explanation-box" style="display:none; position:absolute; left:32px; top:0; z-index:20; background:#fff; color:#222; border:1px solid #1976d2; border-radius:8px; box-shadow:0 2px 8px #b3e5fc; padding:12px; min-width:220px; max-width:320px; font-size:1em;">
+                    <!-- Content set by JS -->
+                </div>
+            </div>
+            <div id="visualization" style="min-height: 420px; background: rgba(255,255,255,0.7); border-radius: 16px; box-shadow: 0 8px 32px rgba(33,150,243,0.10); padding: 16px 18px 18px 18px; width: 100%; max-width: 520px; display: flex; flex-direction: column; align-items: center; position: relative; margin: 0 auto;">
+                <div id="grid-instructions" style="margin-bottom:12px; color:#1976d2; font-size:1.08em; background:#e3f2fd; border-radius:6px; padding:8px 14px; text-align:left; width: 100%; box-sizing: border-box;">
+                    <b>Instructions (Grid):</b> Click cells to add/remove obstacles. Click on <b>A</b> or <b>B</b> and then another cell to move the start/end. Choose an algorithm and press <b>Run</b> to visualize the pathfinding process.
+                </div>
+                <div style="width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                    <canvas id="map-canvas" width="400" height="400" style="background:#fff; display:block; margin:0 auto; border-radius:10px;"></canvas>
+                </div>
+                <!-- Removed grid speed regulator -->
+            </div>
+        </div>
+        <div id="legend" style="display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 18px; background: rgba(255,255,255,0.85); border-radius: 12px; box-shadow: 0 2px 8px #b3e5fc; padding: 18px 22px; margin-top: 0;">
+            <div><span class="legend-cell start"></span> Start</div>
+            <div><span class="legend-cell end"></span> End</div>
+            <div><span class="legend-cell path"></span> Path</div>
+            <div><span class="legend-cell visited"></span> Visited</div>
+            <div><span class="legend-cell obstacle"></span> Obstacle</div>
+        </div>
+        <div style="flex:1"></div>
+    </div>
+
+    <!-- Map section help icon aligned to the right above the comparison maps -->
+    <div style="width:100%; display:flex; justify-content:flex-end; align-items:center; margin-top:36px; margin-bottom:0;">
+        <div id="map-help-explanation" style="position:relative; display:flex; flex-direction:column; align-items:flex-end;">
+            <span id="map-help-icon" style="cursor:pointer; font-size:22px; color:#ff4081; border-radius:50%; border:1.5px solid #ff4081; padding:3px 11px; background:#fff; font-weight:bold;">?</span>
+            <div id="map-help-box" style="display:none; position:absolute; right:0; top:36px; z-index:30; background:#fff; color:#222; border:1.5px solid #ff4081; border-radius:10px; box-shadow:0 2px 12px #ffb6c1; padding:16px 18px; min-width:260px; max-width:400px; font-size:1.05em;">
+                <b>How to use the Map Comparison:</b>
+                <ul style="margin: 10px 0 0 18px; padding: 0;">
+                    <li>Select an algorithm for each map using the dropdown.</li>
+                    <li>Drag the <b>Point A</b> and <b>Point B</b> markers to set start and end locations for each map independently.</li>
+                    <li>Click a marker, then click anywhere on the map to instantly move it.</li>
+                    <li>Adjust the speed slider below each map to control animation speed.</li>
+                    <li>Click <b>Run</b> or <b>Start Animation</b> to visualize the shortest path for the selected algorithm.</li>
+                    <li>Compare the results side by side to see how different algorithms perform on real road networks.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="compare-row" style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 32px; margin: 32px auto 0 auto; max-width: 1100px;">
+        <div id="compare-map-section-1" class="compare-map-section" style="min-height: 420px; background: rgba(255,255,255,0.7); border-radius: 16px; box-shadow: 0 8px 32px rgba(33,150,243,0.10); padding: 16px 18px 18px 18px; width: 440px; display: flex; flex-direction: column; align-items: center;">
+            <div style="margin-bottom:12px; color:#1976d2; font-size:1.08em; background:#e3f2fd; border-radius:6px; padding:8px 14px; text-align:left; width: 100%; box-sizing: border-box;">
+                <b>Map Selection 1:</b>
+                <select id="compare-algo-1">
+                    <option value="dijkstra">Dijkstra's Shortest Path</option>
+                    <option value="astar">A* Search</option>
+                    <option value="bfs">Breadth-First Search</option>
+                    <option value="dfs">Depth-First Search</option>
+                    <option value="greedy">Greedy Best-First Search</option>
+                </select>
+                <button id="compare-run-btn-1" style="margin-left:8px;">Run</button>
+            </div>
+            <div id="compare-leaflet-map-1" style="background:#fff;"></div>
+            <button id="compare-start-map-animation-btn-1" style="margin-top:12px;">Start Animation</button>
+            <!-- Speed regulator for Map Selection 1 -->
+            <div id="compare-map-speed-container-1" style="margin-top:12px; text-align:center;">
+                <label for="compare-map-speed-slider-1">Speed (ms):</label>
+                <input type="range" id="compare-map-speed-slider-1" min="200" max="5000" value="3000" step="100" style="vertical-align:middle;">
+                <span id="compare-map-speed-value-1">3000</span>
+            </div>
+            <div id="compare-map-status-1" style="margin-top:8px; font-weight:bold; color:#1976d2;"></div>
+        </div>
+        <div id="compare-map-section-2" class="compare-map-section" style="min-height: 420px; background: rgba(255,255,255,0.7); border-radius: 16px; box-shadow: 0 8px 32px rgba(255,64,129,0.08); padding: 16px 18px 18px 18px; width: 440px; display: flex; flex-direction: column; align-items: center;">
+            <div style="margin-bottom:12px; color:#ff4081; font-size:1.08em; background:#fce4ec; border-radius:6px; padding:8px 14px; text-align:left; width: 100%; box-sizing: border-box;">
+                <b>Map Selection 2:</b>
+                <select id="compare-algo-2">
+                    <option value="dijkstra">Dijkstra's Shortest Path</option>
+                    <option value="astar">A* Search</option>
+                    <option value="bfs">Breadth-First Search</option>
+                    <option value="dfs">Depth-First Search</option>
+                    <option value="greedy">Greedy Best-First Search</option>
+                </select>
+                <button id="compare-run-btn-2" style="margin-left:8px;">Run</button>
+            </div>
+            <div id="compare-leaflet-map-2" style="background:#fff;"></div>
+            <button id="compare-start-map-animation-btn-2" style="margin-top:12px;">Start Animation</button>
+            <!-- Speed regulator for Map Selection 2 -->
+            <div id="compare-map-speed-container-2" style="margin-top:12px; text-align:center;">
+                <label for="compare-map-speed-slider-2">Speed (ms):</label>
+                <input type="range" id="compare-map-speed-slider-2" min="200" max="5000" value="3000" step="100" style="vertical-align:middle;">
+                <span id="compare-map-speed-value-2">3000</span>
+            </div>
+            <div id="compare-map-status-2" style="margin-top:8px; font-weight:bold; color:#ff4081;"></div>
+        </div>
+    </div>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
