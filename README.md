@@ -33,40 +33,42 @@ this tool bridges education and interactivity in a seamless web environment.
 
 ## ⚙️ How to Run Locally
 
-**Install dependencies** (if any):
+**Install dependencies**:
 
-   pip install flask
+      pip install flask
 
-Run the Flask app:
-python app.py
+**Run the Flask app**:
+    
+      python app.py
 
-Visit the app in your browser:
-http://localhost:5000
+**Visit the app in your browser**:
 
-**📦 Features**
+      http://localhost:5000
 
-Interactive grid-based visualizer for pathfinding
+## 📦 Features
 
-Sorting algorithm demos (to be integrated or expanded)
+   - Interactive grid-based visualizer for pathfinding
 
-Clean, simple frontend using vanilla HTML/CSS/JS
+   - Sorting algorithm demos (to be integrated or expanded)
 
-Lightweight and beginner-friendly codebase
+   - Clean, simple frontend using vanilla HTML/CSS/JS
 
-Modular algorithm structure (easy to extend)
+   - Lightweight and beginner-friendly codebase
 
-**🔮 Future Improvements (Ideas)**
+   - Modular algorithm structure (easy to extend)
 
-Add support for BFS, DFS, and Greedy algorithms
+## 🔮 Future Improvements (Ideas)
 
-Add animation to sorting visualizations
+   - Add support for BFS, DFS, and Greedy algorithms
 
-Dynamic grid size and speed control
+   - Add animation to sorting visualizations
 
-Map view or weighted grid enhancements
+   - Dynamic grid size and speed control
 
-Export/share grid configurations
+   - Map view or weighted grid enhancements
 
-**👨‍💻 Author**
+   - Export/share grid configurations
+
+## 👨‍💻 Author
 
 Udit Chowdary
