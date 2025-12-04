@@ -1,4 +1,4 @@
-# 🧠 Algo Visualizer
+# Algo Visualizer
 
 A Python-based algorithm visualizer that allows users to interactively explore and understand core computer science algorithms. 
 Built using Flask for backend routing and classic HTML/CSS/JavaScript for the frontend, 
